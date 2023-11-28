@@ -6,7 +6,6 @@ import MarketCard from "@/components/MarketCard";
 import InstitutionContact from "@/components/InstitutionContact";
 import LineChart from "@/components/LineChart";
 import OracleTable from "@/components/OracleTable";
-import Profile from "@/components/Profile";
 import { MarketProps } from "@/types";
 
 import { useContractRead } from "wagmi";
