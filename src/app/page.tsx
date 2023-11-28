@@ -6,7 +6,7 @@ import MarketCard from "@/components/MarketCard";
 import InstitutionContact from "@/components/InstitutionContact";
 import LineChart from "@/components/LineChart";
 import OracleTable from "@/components/OracleTable";
-import { MarketProps } from "@/types";
+import { MarketProps, ReportArray, ReportProps } from "@/types";
 
 import { useContractRead } from "wagmi";
 import { labelhash, multicall3Abi } from "viem";
@@ -147,20 +147,45 @@ export default function Home({ searchParams }: any) {
             </div>
           ))} */}
 
-      {!isDataEmpty ? (
-        <div>
-          {allMarkets.slice(0, 10).map((market) => (
-            <OracleTable key={market.exchange_name} market={market} />
-          ))}
-        </div>
-      ) : (
-        <div className="home__error-container">
-          <h2 className="text-black text-base font-bold">No results!</h2>
-        </div>
-      )}
+      {/* {
+        data && data.filter((response) => response.result.length > 0)
+        .reverse()
+        .map((response, i) => (
+          <div key={i}>
+            Round {data.length - i - 1}
+            {response.result.map((r, j) => (
+              <div key={j}>
+                <div>{r.unitPrice.toString() / 10 ** 8}</div>
+                <div>{r.timestamp.toString()}</div>
+                <div>{r.by}</div>
+              </div>
+            ))}
+          </div>
+        ))} */}
+
+      <OracleTable reports={parseReports(data)} />
     </main>
   );
 }
+
+const parseReports = (data: any): ReportProps[] => {
+  let flattenedArray = data.flatMap((item) =>
+    item.result.map((subItem) => ({
+      unitPrice: subItem.unitPrice.toString() / 10 ** 8,
+      timestamp: epochToLabel(subItem.timestamp.toString()),
+      by: subItem.by,
+      status: item.status,
+    }))
+  );
+
+  // Now 'flattenedArray' contains a single-level array
+  console.log(flattenedArray);
+
+  // if (flattenedReports === undefined) {
+  //   flattenedReports = [];
+  // }
+  return flattenedArray;
+};
 
 function getChartDataFromCalls(
   calls:
@@ -223,9 +248,10 @@ function getChartDataFromCalls(
 
 function epochToLabel(epoch: number): string {
   const date = new Date(epoch * 1000);
-  return `${date.getDate()}, ${date.getHours()}h`;
+  return `${date.getDate()}/${date.getMonth()}/${date.getFullYear()} ${date.getHours()}h ${date.getMinutes()}m ${date.getSeconds()}s`;
 }
 
 function generateSequence(start: number, x: number, k: number) {
   return Array.from({ length: k }, (_, index) => start + (index + 1) * x);
 }
+

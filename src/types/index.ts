@@ -40,3 +40,13 @@ export interface FilterProps {
   institution: string;
   limit: number;
 }
+
+export type ReportProps = {
+  unitPrice: number;
+  by: string;
+  timestamp: number;
+};
+
+export type ReportArray = {
+  reports: Array<ReportProps>;
+};
