@@ -1,5 +1,3 @@
-// Profile.tsx
-
 import { useAccount, useConnect, useDisconnect } from "wagmi";
 import { InjectedConnector } from "wagmi/connectors/injected";
 import CustomButton from "./CustomButton";
