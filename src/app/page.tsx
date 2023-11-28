@@ -1,7 +1,6 @@
 "use client";
 import Image from "next/image";
 import Hero from "@/components/Hero";
-import Searchbar from "@/components/Searchbar";
 import CustomFilter from "@/components/CustomFilter";
 import MarketCard from "@/components/MarketCard";
 import InstitutionContact from "@/components/InstitutionContact";
@@ -19,6 +18,7 @@ import { useState } from "react";
 import { ChartData } from "chart.js";
 import SearchInstitution from "@/components/SearchInstitution";
 import ActualValue from "@/components/ActualValue";
+import { Navbar } from "@/components/Navbar";
 
 const DEPLOY_TIME = 1700776440;
 const PRICE_AGGREGATOR_ADDRESS = "0x903d07fb501017e45d5a73ffba41aafa5413ef07";
@@ -73,7 +73,7 @@ export default function Home({ searchParams }: any) {
   console.log({ data });
   return (
     <main className="overflow-hidden">
-      <Profile></Profile>
+      <Navbar />
 
       <div className="mt-12 padding-x padding-y max-width" id="discover">
         <div className="home__text-container">
