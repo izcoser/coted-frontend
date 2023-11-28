@@ -17,6 +17,8 @@ import { multicall } from "@wagmi/core";
 import { useContractReads } from "wagmi";
 import { useState } from "react";
 import { ChartData } from "chart.js";
+import SearchInstitution from "@/components/SearchInstitution";
+import ActualValue from "@/components/ActualValue";
 
 const DEPLOY_TIME = 1700776440;
 const PRICE_AGGREGATOR_ADDRESS = "0x903d07fb501017e45d5a73ffba41aafa5413ef07";
@@ -72,17 +74,14 @@ export default function Home({ searchParams }: any) {
   return (
     <main className="overflow-hidden">
       <Profile></Profile>
-      <div className="home__filters">
-        <Searchbar />
 
-        <div className="home__filter-container">
-          <CustomFilter /*title="instituição" */ />
-        </div>
-      </div>
-      <Hero />
       <div className="mt-12 padding-x padding-y max-width" id="discover">
         <div className="home__text-container">
-          <h1 className="text-4xl font-bold">Oráculos</h1>
+          <SearchInstitution />
+
+          <Hero title={""} />
+          <ActualValue />
+          <h1 className="text-4xl mt-10 font-bold">Oráculos</h1>
           <h2>
             Um "oráculo" no contexto de Títulos do Tesouro Direto no Mercado
             Secundário é uma entidade ou serviço que fornece informações
@@ -94,7 +93,7 @@ export default function Home({ searchParams }: any) {
             títulos, para obter o preço mais recente. Ele então fornece essa
             informação ao contrato ou sistema, permitindo que ele execute lógica
             de negócios com base no valor atualizado do Título do Tesouro
-            Direto.{" "}
+            Direto.
           </h2>
         </div>
 
@@ -132,7 +131,7 @@ export default function Home({ searchParams }: any) {
         </div>
       )} */}
 
-      {data &&
+      {/* {data &&
         data
           .filter((response) => response.result.length > 0)
           .reverse()
@@ -147,7 +146,19 @@ export default function Home({ searchParams }: any) {
                 </div>
               ))}
             </div>
+          ))} */}
+
+      {!isDataEmpty ? (
+        <div>
+          {allMarkets.slice(0, 10).map((market) => (
+            <OracleTable key={market.exchange_name} market={market} />
           ))}
+        </div>
+      ) : (
+        <div className="home__error-container">
+          <h2 className="text-black text-base font-bold">No results!</h2>
+        </div>
+      )}
     </main>
   );
 }
