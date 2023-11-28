@@ -1,8 +1,11 @@
 import { Providers } from './providers'
+import type { Metadata } from "next";
+import "./globals.css";
 
-export const metadata = {
-  title: 'wagmi',
-}
+export const metadata: Metadata = {
+  title: "Oráculo do Tesouro",
+  description: "Informação periódica da cotação de títulos públicos.",
+};
 
 export default function RootLayout({
   children,
