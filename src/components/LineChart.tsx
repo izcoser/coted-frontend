@@ -6,7 +6,6 @@ import {
   Tooltip,
   PointElement,
   LineElement,
-  ChartData,
 } from "chart.js";
 import { Line } from "react-chartjs-2";
 
@@ -19,25 +18,32 @@ ChartJS.register(
 );
 
 type Props = {
-  labels: Array<string>,
-  datasets: any
-}
+  labels: Array<string>;
+  data: Array<number>;
+};
 
-const LineChart = ({labels, datasets}: Props) => {
-  const placeholderData = {
+const LineChart = ({ labels, data }: Props) => {
+  const chartData = {
     labels: labels,
-    datasets: datasets,
+    datasets: [
+      {
+        label: "Daily Averages",
+        data: data,
+        borderColor: "blue",
+        borderWidth: 1,
+        fill: false,
+      },
+    ],
   };
 
   return (
     <div className="line-chart-container mb-20">
-      <div className="flex-1 overflow-autopt-36 padding padding-x">
-        <h2 className="my-20 text-2xl font-bold">Cotação</h2>
-        <Line
-          data={placeholderData}
-        />
+      <div className="flex-1 overflow-auto pt-36 padding padding-x">
+        <h2 className="my-20 text-2xl font-bold">Daily Averages</h2>
+        <Line data={chartData} />
       </div>
     </div>
   );
 };
+
 export default LineChart;

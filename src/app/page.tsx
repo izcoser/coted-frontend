@@ -70,6 +70,7 @@ export default function Home({ searchParams }: any) {
   // console.log(allMarkets);
 
   console.log({ data });
+  const dailyAverages = calculateDailyAverages(data);
 
   return (
     <main className="overflow-hidden">
@@ -115,9 +116,10 @@ export default function Home({ searchParams }: any) {
         }
       </div>
       <LineChart
-        labels={getChartDataFromCalls(calls, currentRound).labels}
-        datasets={getChartDataFromCalls(calls, currentRound).datasets}
+        labels={Object.keys(dailyAverages)}
+        data={Object.values(dailyAverages)}
       />
+
       {/* {!isDataEmpty ? (
         <div>
           {allMarkets.slice(0, 20).map((market) => (
@@ -172,44 +174,60 @@ export default function Home({ searchParams }: any) {
 function calculateDailyAverages(data: any) {
   const dailyData = {};
 
-  data.forEach(item => {
-    item.result.forEach(subItem => {
-      const dateKey = new Date(Number(subItem.timestamp) * 1000).toISOString().split('T')[0];
+  if (!data || !Array.isArray(data)) {
+    console.error("Invalid data format or empty data.");
+    return {};
+  }
 
-      if (!dailyData[dateKey]) {
-        dailyData[dateKey] = { sum: 0, count: 0 };
-      }
+  data.forEach((item: { result: any[] }) => {
+    if (item && Array.isArray(item.result)) {
+      item.result.forEach((subItem) => {
+        const dateKey = new Date(Number(subItem.timestamp) * 1000)
+          .toISOString()
+          .split("T")[0];
 
-      dailyData[dateKey].sum += Number(subItem.unitPrice)
-      dailyData[dateKey].count++;
-    });
+        if (!dailyData[dateKey]) {
+          dailyData[dateKey] = { sum: 0, count: 0 };
+        }
+
+        dailyData[dateKey].sum += Number(subItem.unitPrice);
+        dailyData[dateKey].count++;
+      });
+    }
   });
 
   const dailyAverages = {};
   for (const dateKey in dailyData) {
     const { sum, count } = dailyData[dateKey];
-    dailyAverages[dateKey] = (sum / count) / (10 ** 8);
+    dailyAverages[dateKey] = sum / count / 10 ** 8;
   }
 
   return dailyAverages;
 }
-
 const parseReports = (data: any): ReportProps[] => {
-  let flattenedArray = data.flatMap((item) =>
-    item.result.map((subItem) => ({
-      unitPrice: subItem.unitPrice.toString() / 10 ** 8,
-      timestamp: epochToLabel(subItem.timestamp.toString()),
-      by: subItem.by,
-      status: item.status,
-    }))
-  );
+  if (!data || !Array.isArray(data)) {
+    console.error("Invalid data format or empty data.");
+    return [];
+  }
+
+  let flattenedArray: ReportProps[] = [];
+
+  data.forEach((item) => {
+    if (item && item.result && Array.isArray(item.result)) {
+      flattenedArray = flattenedArray.concat(
+        item.result.map((subItem) => ({
+          unitPrice: subItem.unitPrice.toString() / 10 ** 8,
+          timestamp: epochToLabel(subItem.timestamp.toString()),
+          by: subItem.by,
+          status: item.status,
+        }))
+      );
+    }
+  });
 
   // Now 'flattenedArray' contains a single-level array
   console.log(flattenedArray);
 
-  // if (flattenedReports === undefined) {
-  //   flattenedReports = [];
-  // }
   return flattenedArray;
 };
 
