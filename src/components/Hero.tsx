@@ -1,12 +1,16 @@
-"use client";
+// Hero.js
 import React from "react";
-import CustomButton from "./CustomButton";
+import ActualValue from "./ActualValue";
 
-const Hero = () => {
+interface HeroProps {
+  title: string;
+}
+
+const Hero = ({ title }: HeroProps) => {
   return (
     <div className="hero">
       <div className="flex-1 pt-6 padding padding-x">
-        <h1 className="hero__title">TESOURO SELIC 2026</h1>
+        <h1 className="hero__title">{title}</h1>
       </div>
     </div>
   );
