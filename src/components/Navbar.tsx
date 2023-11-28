@@ -2,7 +2,6 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import Profile from "./Profile";
 
 export const Navbar: React.FC = () => {
   return (
@@ -17,7 +16,6 @@ export const Navbar: React.FC = () => {
             className="object-contain"
           />
         </Link>
-        <Profile />
       </nav>
     </header>
   );
