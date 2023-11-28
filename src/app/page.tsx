@@ -70,6 +70,7 @@ export default function Home({ searchParams }: any) {
   // console.log(allMarkets);
 
   console.log({ data });
+
   return (
     <main className="overflow-hidden">
       <Navbar />
@@ -166,6 +167,31 @@ export default function Home({ searchParams }: any) {
       <OracleTable reports={parseReports(data)} />
     </main>
   );
+}
+
+function calculateDailyAverages(data: any) {
+  const dailyData = {};
+
+  data.forEach(item => {
+    item.result.forEach(subItem => {
+      const dateKey = new Date(Number(subItem.timestamp) * 1000).toISOString().split('T')[0];
+
+      if (!dailyData[dateKey]) {
+        dailyData[dateKey] = { sum: 0, count: 0 };
+      }
+
+      dailyData[dateKey].sum += Number(subItem.unitPrice)
+      dailyData[dateKey].count++;
+    });
+  });
+
+  const dailyAverages = {};
+  for (const dateKey in dailyData) {
+    const { sum, count } = dailyData[dateKey];
+    dailyAverages[dateKey] = (sum / count) / (10 ** 8);
+  }
+
+  return dailyAverages;
 }
 
 const parseReports = (data: any): ReportProps[] => {
