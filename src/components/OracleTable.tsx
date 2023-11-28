@@ -29,8 +29,13 @@ const OracleTable = ({ reports }: Props) => {
               </tr>
               {reports.map((r, i) => (
                 <tr key={i}>
-                  <td className="border px-8 py-4 font-bold">
-                    <a className="text-blue-600" target="_blank" href={`https://sepolia.etherscan.io/address/${r.by}`}>
+                  <td className="border px-8 py-4 font-bold ">
+                    <span className="mr-1">{addressToName(r.by)} -</span>
+                    <a
+                      className="text-blue-600"
+                      target="_blank"
+                      href={`https://sepolia.etherscan.io/address/${r.by}`}
+                    >
                       {minifyAddress(r.by)}
                     </a>
                   </td>
@@ -50,7 +55,15 @@ const OracleTable = ({ reports }: Props) => {
 };
 
 const addressToName = (address: string): string => {
-  return "Oráculo " + address.charAt(-1);
+  switch (address.slice(0, 3)) {
+    case "0xd":
+      return "Oráculo 1";
+    case "0xA":
+      return "Oráculo 2";
+    case "0x1":
+      return "Oráculo 3";
+  }
+  return "Unknown";
 };
 
 const minifyAddress = (address: string): string => {

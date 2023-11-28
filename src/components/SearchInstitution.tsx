@@ -28,7 +28,7 @@ const SearchInstitution = () => {
           value={selectedOption}
           onChange={handleSelectChange}
         >
-          <option selected>Escolha um Título</option>
+          <option defaultValue={"PRE2026"}>Escolha um Título</option>
           <option value="PRE2026">TESOURO PREFIXADO 2026</option>
           <option value="PRE2029">TESOURO PREFIXADO 2029</option>
           <option value="PRE2033cjuros">
