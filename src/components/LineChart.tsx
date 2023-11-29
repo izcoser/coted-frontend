@@ -29,7 +29,7 @@ const LineChart = ({ labels, data }: Props) => {
       {
         label: "Daily Averages",
         data: data,
-        borderColor: "blue",
+        borderColor: "green",
         borderWidth: 1,
         fill: false,
       },
@@ -39,7 +39,7 @@ const LineChart = ({ labels, data }: Props) => {
   return (
     <div className="line-chart-container mb-20">
       <div className="flex-1 overflow-auto pt-36 padding padding-x">
-        <h2 className="my-20 text-2xl font-bold">Daily Averages</h2>
+        <h2 className="my-20 text-2xl font-bold">Médias Diárias</h2>
         <Line data={chartData} />
       </div>
     </div>

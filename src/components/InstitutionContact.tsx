@@ -1,6 +1,6 @@
 "use client";
 
-import { MarketProps } from "@/types";
+import { ReportProps } from "@/types";
 import { Fragment } from "react";
 import Image from "next/image";
 import { Dialog, Transition } from "@headlessui/react";
@@ -9,15 +9,19 @@ import { IoClose } from "react-icons/io5";
 interface InstitutionContactProps {
   isOpen: boolean;
   closeModal: () => void;
-  market: MarketProps;
+  selectedMarket: ReportProps | null;
 }
 
 const InstitutionContact = ({
   isOpen,
   closeModal,
-  market,
+  selectedMarket,
 }: InstitutionContactProps) => {
-  const { exchange_name } = market;
+  if (!selectedMarket) {
+    return null;
+  }
+
+  const marketName = addressToName(selectedMarket.by);
 
   return (
     <>
@@ -57,7 +61,7 @@ const InstitutionContact = ({
 
                   <div className="flex flex-1 flex-col">
                     <div className="relative w-full h-40 bg-pattern bg-cover bg-center rounded-lg">
-                      <h2 className="p-10 font-bold">{exchange_name}</h2>
+                      <h2 className="p-10 font-bold">{marketName}</h2>
                       <p className="px-10">Contato: teste123@email.com.br</p>
                     </div>
                   </div>
@@ -69,6 +73,18 @@ const InstitutionContact = ({
       </Transition>
     </>
   );
+};
+
+const addressToName = (address: string): string => {
+  switch (address.slice(0, 3)) {
+    case "0xd":
+      return "Oráculo 1";
+    case "0xA":
+      return "Oráculo 2";
+    case "0x1":
+      return "Oráculo 3";
+  }
+  return "Unknown";
 };
 
 export default InstitutionContact;
