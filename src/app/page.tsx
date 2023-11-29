@@ -52,25 +52,10 @@ export default function Home({ searchParams }: any) {
     },
   });
 
-  const allMarkets = [
-    {
-      exchange_id: "1",
-      exchange_name: "Oracle 1",
-      pair: "IPCA/BRL",
-      base_currency_name: "BRL",
-      adjusted_volume_24h_share: 1,
-      trust_score: "a",
-      last_updated: new Date(),
-    } as MarketProps,
-  ];
-
-  const isDataEmpty =
-    !Array.isArray(allMarkets) || allMarkets.length < 0 || !allMarkets;
-
-  // console.log(allMarkets);
-
   console.log({ data });
   const dailyAverages = calculateDailyAverages(data);
+  const lastDate = Object.keys(dailyAverages).pop();
+  const lastValue = dailyAverages[lastDate] || 0;
 
   return (
     <main className="overflow-hidden">
@@ -81,7 +66,7 @@ export default function Home({ searchParams }: any) {
           <SearchInstitution />
 
           <Hero title={""} />
-          <ActualValue />
+          <ActualValue lastDate={lastDate} lastValue={lastValue} />
           <h1 className="text-4xl mt-10 font-bold">Oráculos</h1>
           <h2>
             Um "oráculo" no contexto de Títulos do Tesouro Direto no Mercado
@@ -97,74 +82,12 @@ export default function Home({ searchParams }: any) {
             Direto.
           </h2>
         </div>
-
-        {
-          !isDataEmpty && (
-            <section>
-              <div className="home__markets-wrapper">
-                {allMarkets.slice(0, 20).map((market) => (
-                  <MarketCard key={market.exchange_id} market={market} />
-                ))}
-              </div>
-            </section>
-          )
-          // : (
-          //   <div className="home__error-container">
-          //     <h2 className="text-black text-base font-bold">No results!</h2>
-          //     <p>{allMarkets?.message}</p>
-          //   </div>
-        }
+        <MarketCard reports={parseReports(data)} />
       </div>
       <LineChart
         labels={Object.keys(dailyAverages)}
         data={Object.values(dailyAverages)}
       />
-
-      {/* {!isDataEmpty ? (
-        <div>
-          {allMarkets.slice(0, 20).map((market) => (
-            <OracleTable key={market.exchange_id} market={market} />
-          ))}
-        </div>
-      ) : (
-        <div className="home__error-container">
-          <h2 className="text-black text-base font-bold">No results!</h2>
-          <p>{allMarkets?.message}</p>
-        </div>
-      )} */}
-
-      {/* {data &&
-        data
-          .filter((response) => response.result.length > 0)
-          .reverse()
-          .map((response, i) => (
-            <div key={i}>
-              Round {data.length - i - 1}
-              {response.result.map((r, j) => (
-                <div key={j}>
-                  <div>{r.unitPrice.toString() / 10 ** 8}</div>
-                  <div>{r.timestamp.toString()}</div>
-                  <div>{r.by}</div>
-                </div>
-              ))}
-            </div>
-          ))} */}
-
-      {/* {
-        data && data.filter((response) => response.result.length > 0)
-        .reverse()
-        .map((response, i) => (
-          <div key={i}>
-            Round {data.length - i - 1}
-            {response.result.map((r, j) => (
-              <div key={j}>
-                <div>{r.unitPrice.toString() / 10 ** 8}</div>
-                <div>{r.timestamp.toString()}</div>
-                <div>{r.by}</div>
-              </div>
-            ))}
-          </div>
-        ))} */}
 
       <OracleTable reports={parseReports(data)} />
     </main>
@@ -230,65 +153,6 @@ const parseReports = (data: any): ReportProps[] => {
 
   return flattenedArray;
 };
-
-function getChartDataFromCalls(
-  calls:
-    | (
-        | {
-            error: Error;
-            result?: undefined;
-            status: "failure";
-          }
-        | {
-            error?: undefined;
-            result: unknown;
-            status: "success";
-          }
-      )[]
-    | undefined,
-  currentRound: number
-): ChartData {
-  if (!calls || calls[0].result == undefined) {
-    return {
-      labels: [],
-      datasets: [
-        {
-          label: "$PREFIXADO/BRL Oraculo 1",
-          data: [],
-          borderColor: "green",
-          borderWidth: 1,
-          backgroundColor: "green",
-          fill: "true",
-        },
-      ],
-    } as ChartData;
-  }
-  const epochs = generateSequence(DEPLOY_TIME, 7200, (calls as []).length);
-  const labels = epochs.map((e) => epochToLabel(e));
-  let values = (calls as []).map((response) =>
-    response.result.length > 0
-      ? response.result[0].unitPrice.toString() / 10 ** 8
-      : 0
-  );
-  if (values.length == 0) {
-    values = Array(epochs.length).fill(0);
-  }
-
-  const dataset = {
-    label: "$PREFIXADO/BRL Oraculo 1",
-    data: values,
-    borderColor: "green",
-    borderWidth: 1,
-    backgroundColor: "green",
-    fill: "true",
-  };
-
-  // const chartData = { labels: labels, datasets: datasets } as ChartData;
-  // console.log({ chartData });
-  // return chartData;
-
-  return { labels: labels, datasets: [dataset] } as ChartData;
-}
 
 function epochToLabel(epoch: number): string {
   const date = new Date(epoch * 1000);
