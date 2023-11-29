@@ -1,6 +1,4 @@
-"use client";
-
-import { ReportArray, ReportProps } from "@/types";
+import { ReportProps } from "@/types";
 
 type Props = {
   reports: ReportProps[];
@@ -8,42 +6,49 @@ type Props = {
 
 const OracleTable = ({ reports }: Props) => {
   return (
-    <div className="flex mx-10 justify-between items-center flex-col">
+    <div className="flex mx-4 sm:mx-10 justify-between items-center flex-col">
       <div className="overflow-x-auto sm:-mx-6 lg:-mx-8">
         <div className="inline-block min-w-full py-2 sm:px-6 lg:px-8">
-          <table className="shadow-lg bg-white">
-            <tbody>
+          <table className="shadow-lg bg-white w-full sm:w-auto">
+            <thead className="hidden sm:table-header-group">
               <tr>
-                <th className="bg-green-100 border text-left px-8 py-4">
+                <th className="bg-green-100 border text-left px-4 sm:px-8 py-2 sm:py-4">
                   Oráculo
                 </th>
-                <th className="bg-green-100 border text-left px-8 py-4">
+                <th className="bg-green-100 border text-left px-4 sm:px-8 py-2 sm:py-4">
                   Título
                 </th>
-                <th className="bg-green-100 border text-left px-8 py-4">
+                <th className="bg-green-100 border text-left px-4 sm:px-8 py-2 sm:py-4">
                   Preço Unitário
                 </th>
-                <th className="bg-green-100 border text-left px-8 py-4">
-                  Data da Atualizaçao
+                <th className="bg-green-100 border text-left px-4 sm:px-8 py-2 sm:py-4">
+                  Data da Atualização
                 </th>
               </tr>
+            </thead>
+            <tbody>
               {reports.map((r, i) => (
                 <tr key={i}>
-                  <td className="border px-8 py-4 font-bold ">
+                  <td className="border px-4 sm:px-8 py-2 sm:py-4 font-bold text-sm sm:text-base">
                     <span className="mr-1">{addressToName(r.by)} -</span>
                     <a
                       className="text-blue-600"
                       target="_blank"
+                      rel="noopener noreferrer"
                       href={`https://sepolia.etherscan.io/address/${r.by}`}
                     >
                       {minifyAddress(r.by)}
                     </a>
                   </td>
-                  <td className="border px-8 py-4 font-bold">
+                  <td className="border px-4 sm:px-8 py-2 sm:py-4 font-bold text-sm sm:text-base">
                     Tesouro Prefixado
                   </td>
-                  <td className="border px-8 py-4">R$ {r.unitPrice}</td>
-                  <td className="border px-8 py-4">{r.timestamp}</td>
+                  <td className="border px-4 sm:px-8 py-2 sm:py-4 text-sm sm:text-base">
+                    R$ {r.unitPrice}
+                  </td>
+                  <td className="border px-4 sm:px-8 py-2 sm:py-4 text-sm sm:text-base">
+                    {r.timestamp}
+                  </td>
                 </tr>
               ))}
             </tbody>

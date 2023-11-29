@@ -19,9 +19,7 @@ const SearchInstitution = () => {
         <label
           htmlFor="Escolha o Título"
           className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-        >
-          Selecione uma opção
-        </label>
+        ></label>
         <select
           id="titles"
           className="bg-gradient-to-l shadow-xl from-green-200 via-green-400 to-green-600 border px-4 border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-green-500 focus:border-green-500 block w-full p-2.5 dark:bg-gray-500 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-green-500 dark:focus:border-green-500"

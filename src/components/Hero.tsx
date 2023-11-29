@@ -9,7 +9,7 @@ interface HeroProps {
 const Hero = ({ title }: HeroProps) => {
   return (
     <div className="hero">
-      <div className="flex-1 pt-6 padding padding-x">
+      <div className="flex-1 pt-6">
         <h1 className="hero__title">{title}</h1>
       </div>
     </div>

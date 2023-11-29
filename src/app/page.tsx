@@ -1,12 +1,11 @@
 "use client";
 import Image from "next/image";
 import Hero from "@/components/Hero";
-import CustomFilter from "@/components/CustomFilter";
 import MarketCard from "@/components/MarketCard";
 import InstitutionContact from "@/components/InstitutionContact";
 import LineChart from "@/components/LineChart";
 import OracleTable from "@/components/OracleTable";
-import { MarketProps, ReportArray, ReportProps } from "@/types";
+import { ReportArray, ReportProps } from "@/types";
 
 import { useContractRead } from "wagmi";
 import { labelhash, multicall3Abi } from "viem";
@@ -64,7 +63,6 @@ export default function Home({ searchParams }: any) {
       <div className="mt-12 padding-x padding-y max-width" id="discover">
         <div className="home__text-container">
           <SearchInstitution />
-
           <Hero title={""} />
           <ActualValue lastDate={lastDate} lastValue={lastValue} />
           <h1 className="text-4xl mt-10 font-bold">Oráculos</h1>
