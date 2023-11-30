@@ -1,61 +1,65 @@
 "use client";
-import Image from "next/image";
-import Hero from "@/components/Hero";
-import CustomFilter from "@/components/CustomFilter";
 import MarketCard from "@/components/MarketCard";
-import InstitutionContact from "@/components/InstitutionContact";
 import LineChart from "@/components/LineChart";
 import OracleTable from "@/components/OracleTable";
-import { MarketProps, ReportArray, ReportProps } from "@/types";
-
-import { useContractRead } from "wagmi";
-import { labelhash, multicall3Abi } from "viem";
-import { priceAggregatorAbi } from "@/abis";
-import { multicall } from "@wagmi/core";
-import { useContractReads } from "wagmi";
-import { useState } from "react";
-import { ChartData } from "chart.js";
 import SearchInstitution from "@/components/SearchInstitution";
 import ActualValue from "@/components/ActualValue";
 import { Navbar } from "@/components/Navbar";
+import { addresses, CONTRACT_EXAMPLE } from "@/constants";
+import { usePrices, parseUnitPrice } from "@/hooks";
+import { useState } from "react";
+import { Tooltip } from "flowbite-react";
+import { Marked } from "marked";
+import { markedHighlight } from "marked-highlight";
+import hljs from "highlight.js";
 
-const DEPLOY_TIME = 1700776440;
-const PRICE_AGGREGATOR_ADDRESS = "0x903d07fb501017e45d5a73ffba41aafa5413ef07";
-const PRE_TOKEN_ADDRESS = "0x0000000000000000000000000000000000000000";
-const SELIC_TOKEN_ADDRESS = "0x0000000000000000000000000000000000000001";
-const IPCA_TOKEN_ADDRESS = "0x0000000000000000000000000000000000000002";
+export default function Home() {
+  const hljsDefineSolidity = require("highlightjs-solidity");
+  hljsDefineSolidity(hljs);
+  const marked = new Marked(
+    markedHighlight({
+      langPrefix: "hljs language-",
+      highlight(code) {
+        const language = "solidity";
+        return hljs.highlight(code, { language }).value;
+      },
+    })
+  );
 
-export default function Home({ searchParams }: any) {
-  const priceCall = {
-    address: PRICE_AGGREGATOR_ADDRESS,
-    abi: priceAggregatorAbi,
-    functionName: "getTokenPriceReports",
-  };
+  const { ipcaReports, selicReports, preReports, isError, isLoading } =
+    usePrices();
 
-  const roundTime = 7200;
-  const now = (new Date() as any) / 1000;
-  const currentRound = Math.ceil((now - DEPLOY_TIME) / roundTime);
-  const calls: any = Array.from(Array(currentRound).keys()).map((n) => {
-    return {
-      ...priceCall,
-      args: [PRE_TOKEN_ADDRESS, n],
-    };
-  });
+  const [selected, setSelected] = useState<string>("pre");
+  const tokenName =
+    selected === "pre"
+      ? "Tesouro Prefixado 2026"
+      : selected === "ipca"
+      ? "Tesouro IPCA+ 2029"
+      : "Tesouro Selic 2026";
+  const ipcaAverages = calculateDailyAverages(ipcaReports.reports);
+  const preAverages = calculateDailyAverages(preReports.reports);
+  const selicAverages = calculateDailyAverages(selicReports.reports);
 
-  console.log(calls);
+  const reports =
+    selected === "pre"
+      ? preReports
+      : selected === "ipca"
+      ? ipcaReports
+      : selicReports;
+  const averages =
+    selected === "pre"
+      ? preAverages
+      : selected === "ipca"
+      ? ipcaAverages
+      : selicAverages;
 
-  const { data, isError, isLoading } = useContractReads({
-    contracts: calls,
-    staleTime: 300_000,
-    onSuccess(data) {
-      console.log("Fetched data successfully", data);
-    },
-  });
+  const toLineChart = [
+    { points: Object.values(preAverages), tokenName: "Tesouro Prefixado 2026" },
+    { points: Object.values(ipcaAverages), tokenName: "Tesouro IPCA+ 2029" },
+    { points: Object.values(selicAverages), tokenName: "Tesouro Selic 2026" },
+  ];
 
-  console.log({ data });
-  const dailyAverages = calculateDailyAverages(data);
-  const lastDate = Object.keys(dailyAverages).pop();
-  const lastValue = dailyAverages[lastDate] || 0;
+  console.log({ reports });
 
   return (
     <main className="overflow-hidden">
@@ -63,103 +67,109 @@ export default function Home({ searchParams }: any) {
 
       <div className="mt-12 padding-x padding-y max-width" id="discover">
         <div className="home__text-container">
-          <SearchInstitution />
-
-          <Hero title={""} />
-          <ActualValue lastDate={lastDate} lastValue={lastValue} />
+          <SearchInstitution title={tokenName} setSelected={setSelected} />
+          <ActualValue
+            lastTimestamp={reports?.reports?.at(-1)?.timestamp}
+            lastDate={reports?.reports?.at(-1)?.date || "Desconhecida"}
+            lastValue={parseUnitPrice(
+              reports?.latestRound?.unitPrice as unknown as bigint
+            )}
+          />
           <h1 className="text-4xl mt-10 font-bold">Oráculos</h1>
           <h2>
-            Um "oráculo" no contexto de Títulos do Tesouro Direto no Mercado
-            Secundário é uma entidade ou serviço que fornece informações
-            externas e confiáveis para contratos ou sistemas automatizados em
-            uma plataforma financeira. Quando um contrato ou sistema precisa
-            saber o preço atual de um Título do Tesouro Direto no Mercado
-            Secundário, ele pode usar um oráculo para obter essa informação. O
-            oráculo consulta fontes externas, como plataformas de negociação de
-            títulos, para obter o preço mais recente. Ele então fornece essa
-            informação ao contrato ou sistema, permitindo que ele execute lógica
-            de negócios com base no valor atualizado do Título do Tesouro
-            Direto.
+            Um oráculo é uma entidade que fornece dados externos para
+            blockchains, conectando-as a informações do mundo real e permitindo
+            o desenvolvimento de novos casos de uso. Para garantir a integridade
+            dos dados, uma seleção de oráculos independentes e de boa reputação
+            reporta as informações individualmente para que um valor final seja
+            calculado. No contexto desta aplicação, os preços dos Títulos
+            Públicos do Tesouro Direto no mercado secundário são reportados
+            pelos oráculos em um smart contract a cada 2 horas. Após, um valor
+            final médio para aquele período de tempo é calculado pelo smart
+            contract. Assim, qualquer sistema onchain que necessita de dados
+            atualizados sobre a cotação de um título público (e.g. empréstimos
+            colateralizados via títulos públicos tokenizados) pode consultar
+            este smart contract para executar sua lógica de negócios.
           </h2>
         </div>
-        <MarketCard reports={parseReports(data)} />
+        <MarketCard reports={reports.reports} tokenName={tokenName} />
+        <div className="my-2 rounded-xl max-h-[100px] border-[1px] bg-slate-110 p-4">
+          <div className="font-bold leading-5 flex flex-row">
+            <p className="mr-2">Endereço do smart contract</p>
+            <Tooltip
+              content={
+                <span className="max-w-[32ch] block text-justify">
+                  Este é o endereço on-chain do smart contract responsável pelo
+                  recebimento dos preços e cálculo do valor médio.
+                </span>
+              }
+              placement="right"
+              style={"light"}
+              className=""
+            >
+              <button type="button" className="">
+                <img src="https://smartcontract.imgix.net/icons/info.svg?auto=compress%2Cformat" />
+              </button>
+            </Tooltip>
+          </div>
+          <div className="mt-2">
+            <a
+              className="text-blue-600 font-bold"
+              target="_blank"
+              rel="noreferrer"
+              href={`https://sepolia.etherscan.io/address/${addresses.PRICE_AGGREGATOR_ADDRESS}`}
+            >
+              {addresses.PRICE_AGGREGATOR_ADDRESS}
+            </a>
+          </div>
+        </div>
+
+        {/* <div className="my-2 rounded-xl max-h-[100px] border-[1px] bg-slate-110 p-4">
+          <div className="font-bold leading-5 flex flex-row">
+            Obtendo a cotação dos Títulos do Tesouro no seu smart contract
+            <div
+              className="prose-lg prose-invert mt-2 max-w-none prose-a:text-blue-400 prose-pre:w-fit prose-pre:bg-dark-secondary_background prose-tr:divide-x prose-th:border-b-[2px]"
+              dangerouslySetInnerHTML={{
+                __html: CONTRACT_EXAMPLE
+                  ? (marked.parse(CONTRACT_EXAMPLE) as string)
+                  : "No content.",
+              }}
+            ></div>
+          </div>
+        </div> */}
       </div>
       <LineChart
-        labels={Object.keys(dailyAverages)}
-        data={Object.values(dailyAverages)}
+        labels={Object.keys(averages)}
+        data={toLineChart}
+        tokenName={tokenName}
       />
 
-      <OracleTable reports={parseReports(data)} />
+      <OracleTable tokenName={tokenName} reports={reports.reports} />
     </main>
   );
 }
 
 function calculateDailyAverages(data: any) {
-  const dailyData = {};
+  const dailyData: Record<string, any> = {};
 
-  if (!data || !Array.isArray(data)) {
-    console.error("Invalid data format or empty data.");
-    return {};
-  }
+  data.forEach((item: any) => {
+    const dateKey = new Date(Number(item.timestamp) * 1000)
+      .toISOString()
+      .split("T")[0];
 
-  data.forEach((item: { result: any[] }) => {
-    if (item && Array.isArray(item.result)) {
-      item.result.forEach((subItem) => {
-        const dateKey = new Date(Number(subItem.timestamp) * 1000)
-          .toISOString()
-          .split("T")[0];
-
-        if (!dailyData[dateKey]) {
-          dailyData[dateKey] = { sum: 0, count: 0 };
-        }
-
-        dailyData[dateKey].sum += Number(subItem.unitPrice);
-        dailyData[dateKey].count++;
-      });
+    if (!dailyData[dateKey]) {
+      dailyData[dateKey] = { sum: 0, count: 0 };
     }
+
+    dailyData[dateKey].sum += Number(item.unitPrice);
+    dailyData[dateKey].count++;
   });
 
-  const dailyAverages = {};
+  const dailyAverages: Record<string, number> = {};
   for (const dateKey in dailyData) {
     const { sum, count } = dailyData[dateKey];
-    dailyAverages[dateKey] = sum / count / 10 ** 8;
+    dailyAverages[dateKey] = Number((sum / count).toFixed(2));
   }
 
   return dailyAverages;
 }
-const parseReports = (data: any): ReportProps[] => {
-  if (!data || !Array.isArray(data)) {
-    console.error("Invalid data format or empty data.");
-    return [];
-  }
-
-  let flattenedArray: ReportProps[] = [];
-
-  data.forEach((item) => {
-    if (item && item.result && Array.isArray(item.result)) {
-      flattenedArray = flattenedArray.concat(
-        item.result.map((subItem) => ({
-          unitPrice: subItem.unitPrice.toString() / 10 ** 8,
-          timestamp: epochToLabel(subItem.timestamp.toString()),
-          by: subItem.by,
-          status: item.status,
-        }))
-      );
-    }
-  });
-
-  // Now 'flattenedArray' contains a single-level array
-  console.log(flattenedArray);
-
-  return flattenedArray;
-};
-
-function epochToLabel(epoch: number): string {
-  const date = new Date(epoch * 1000);
-  return `${date.getDate()}/${date.getMonth()}/${date.getFullYear()} ${date.getHours()}h ${date.getMinutes()}m ${date.getSeconds()}s`;
-}
-
-function generateSequence(start: number, x: number, k: number) {
-  return Array.from({ length: k }, (_, index) => start + (index + 1) * x);
-}
-

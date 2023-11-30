@@ -1,7 +1,8 @@
-import { Providers } from './providers'
+import { Providers } from "./providers";
 import type { Metadata } from "next";
 import "./globals.css";
 import Footer from "@/components/Footer";
+import "highlight.js/styles/github-dark.min.css";
 
 export const metadata: Metadata = {
   title: "Oráculo do Tesouro",

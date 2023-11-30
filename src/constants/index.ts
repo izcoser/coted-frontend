@@ -1,82 +1,39 @@
-export const institutions = [
-  "BitForex",
-"Toobit",
-"DigiFinex",
-"Coinbase",
-"P2B",
-"BTSE",
-"WhiteBIT",
-"PrimeXBT",
-"Kraken",
-"Coinsbit",
-"Lbank",
-"Binance",
-"XT",
-"Binance",
-"Dexzbitz",
-"Bitfinex",
-"coincheck",
-"Bitstamp",
-];
+export const DEPLOY_TIME = 1700776440;
 
-// export const institutions = [
-//   "Agora CTVM S/A",
-//   "Alfa CCVM S/A",
-//   "Amaril Franklin CTV Ltda",
-//   "Ativa Investimentos S/A CTCV",
-//   "Banco ABC Brasil",
-//   "Banco Andbank (Brasil) S.A.",
-//   "Banco BTG Pactual S/A",
-//   "Banco Cooperativo Sicoob S.A. - Banco Sicoob",
-//   "Banco Daycoval S/A",
-//   "Banco Modal",
-//   "BancoSeguro S.A.",
-//   "Banrisul S/A Corretora de Val Mob e Cambio",
-//   "BB Banco de Investimento S/A",
-//   "BGC Liquidez DTVM Ltda",
-//   "Bocom BBM CCVM S/A",
-//   "C6 Corretora de Titulos e Valores Mobiliarios Ltda",
-//   "Caixa Economica Federal",
-//   "Clear Corretora - Grupo XP",
-//   "CM Capital Markets CCTVM Ltda",
-//   "Corretora Geral de Valores e Cambio Ltda",
-//   "Escritorio Ruy Lage Consultori",
-//   "Fator S/A - Corretora de Valores",
-//   "Galapagos Capital DTVM S.A",
-//   "Genial Institucional CCTVM S/A",
-//   "Genial Investimentos CVM S.A.",
-//   "Guide Investimentos SA Corretora de Valores",
-//   "H.Commcor DTVM Ltda",
-//   "ICAP do Brasil CTVM Ltda",
-//   "Inter DTVM Ltda",
-//   "Itau CV S/A",
-//   "Master S/A CCTVM",
-//   "Mirae Asset Wealth Management (Brasil) CCTVM Ltda.",
-//   "Mundinvest S.A. CCVM",
-//   "Nova Futura CTVM Ltda",
-//   "Nu Invest Corretora de Valores S.A.",
-//   "Orama DTVM S.A.",
-//   "PI Distribuidora de Títulos e",
-//   "Planner CV S.A",
-//   "Positiva CTVM S/A",
-//   "RB Investimentos DTVM Ltda",
-//   "Renascenca DTVM Ltda",
-//   "Rico Investimentos - Grupo XP",
-//   "Safra Corretora de Valores e Cambio Ltda",
-//   "Santander CCVM S/A",
-//   "Senso CCVM S.A.",
-//   "Singulare Corretora de Títulos e Valores Mobiliários S.A.",
-//   "Sita SCCVM S.A.",
-//   "Solidus S/A CCVM",
-//   "Terra Investimentos DTVM Ltda",
-//   "Toro CTVM Ltda",
-//   "Tullett Prebon",
-//   "UBS Brasil CCTVM S/A",
-//   "Vitreo DTVM S.A.",
-//   "Votorantim Asset Manag. DTVM",
-//   "Warren CVMC Ltda",
-//   "XP Investimentos CCTVM S/A",
-// ];
+export const addresses: Record<string, `0x${string}`> = {
+  PRICE_AGGREGATOR_ADDRESS: "0x903d07fb501017e45d5a73ffba41aafa5413ef07",
+  PRE_TOKEN_ADDRESS: "0x0000000000000000000000000000000000000000",
+  SELIC_TOKEN_ADDRESS: "0x0000000000000000000000000000000000000001",
+  IPCA_TOKEN_ADDRESS: "0x0000000000000000000000000000000000000002",
+};
+
+export const CONTRACT_EXAMPLE: string = `interface IPriceAggregator {
+  struct PriceReport {
+      uint256 unitPrice;
+      uint256 timestamp;
+      address by;
+  }
+
+  function getLatestCompletedRound(
+      address token
+  ) external view returns (PriceReport memory priceReport);
+}
+
+contract GetPrice {
+  address aggregator = 0x903d07fb501017e45d5a73ffba41aafa5413ef07;
+  address tokenPrefixado = 0x0000000000000000000000000000000000000000;
+  address tokenSelic = 0x0000000000000000000000000000000000000001;
+  address tokenIpca = 0x0000000000000000000000000000000000000002;
+
+  function getPrice(address token) external view {
+      IPriceAggregator.PriceReport memory priceReport = IPriceAggregator(
+          aggregator
+      ).getLatestCompletedRound(tokenPrefixado);
+      uint256 price = priceReport.unitPrice;
+      uint256 timestamp = priceReport.timestamp;
+  }
+}
+`;
 
 export const footerLinks = [
   {

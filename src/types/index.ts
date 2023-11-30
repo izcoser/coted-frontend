@@ -22,6 +22,7 @@ export type ReportProps = {
   unitPrice: number;
   by: string;
   timestamp: number;
+  date?: string;
 };
 
 export type ReportArray = {
