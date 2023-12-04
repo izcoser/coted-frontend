@@ -55,9 +55,9 @@ export default function Home() {
       : selicAverages;
 
   const toLineChart = [
-    { points: Object.values(preAverages), tokenName: "Tesouro Prefixado 2026" },
-    { points: Object.values(ipcaAverages), tokenName: "Tesouro IPCA+ 2029" },
-    { points: Object.values(selicAverages), tokenName: "Tesouro Selic 2026" },
+    { points: Object.values(preAverages), tokenName: "Tesouro Prefixado 2026 LTN" },
+    { points: Object.values(ipcaAverages), tokenName: "Tesouro IPCA+ 2029 NTN-B Principal" },
+    { points: Object.values(selicAverages), tokenName: "Tesouro Selic 2026 LFT" },
   ];
 
   console.log({ reports });

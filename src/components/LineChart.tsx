@@ -25,9 +25,9 @@ type Props = {
 };
 
 const color = (tokenName: string): string => {
-  return tokenName === "Tesouro Prefixado 2026"
+  return tokenName === "Tesouro Prefixado 2026 LTN"
     ? "blue"
-    : tokenName === "Tesouro IPCA+ 2029"
+    : tokenName === "Tesouro IPCA+ 2029 NTN-B Principal"
     ? "red"
     : "green";
 };
