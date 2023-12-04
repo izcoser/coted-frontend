@@ -7,9 +7,10 @@ import { ReportProps } from "@/types";
 type Props = {
   reports: ReportProps[];
   tokenName: string;
+  scores: number[];
 };
 
-const MarketCard = ({ reports, tokenName }: Props) => {
+const MarketCard = ({ reports, tokenName, scores }: Props) => {
   const [isOpen, setIsOpen] = useState(false);
   //@ts-ignore
   const displayedReports = reports.toReversed().slice(0, 3);
@@ -27,14 +28,22 @@ const MarketCard = ({ reports, tokenName }: Props) => {
             className="group rounded-xl relative shadow-lg border-[1px] bg-slate-110 p-4"
           >
             <div className="flex flex-col">
-              <h2 className="market-card__content-title">{marketName} - {tokenName}</h2>
-              <h3 className="market-card__price">R$ {r.unitPrice}</h3>
+              <h2 className="market-card__content-title">
+                {marketName} - {tokenName}
+              </h2>
+              <h3 className="market-card__price">R$ {r.price}</h3>
               <div className="flex mt-4 flex-row">
                 <FcApproval className="mt-2 mr-2" />
                 <p className="text-xs font-bold mt-2">
                   Última Atualização: {r.date + "."}
                 </p>
               </div>
+              <div className="flex mt-4 flex-row">
+                <p className="text-xs font-bold mt-2">
+                  Score: <span className="text-green-600">{scores[i]}</span>
+                </p>
+              </div>
+
               <a
                 className="text-blue-600 text-sm mt-2 font-bold"
                 target="_blank"

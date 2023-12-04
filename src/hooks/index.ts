@@ -14,9 +14,11 @@ type CallObj = PartialCallObj & {
 };
 
 function getCurrentRound() {
-  const roundTime = 7200;
+  const roundTime = 1800;
   const now = (new Date() as any) / 1000;
-  return Math.ceil((now - DEPLOY_TIME) / roundTime);
+  const current = Math.ceil((now - DEPLOY_TIME) / roundTime);
+  console.log({ current });
+  return current;
 }
 
 function createCallArray(
@@ -31,6 +33,12 @@ function createCallArray(
 }
 
 function createCalls(): [Array<CallObj>, number] {
+  const oracleScoresCall = {
+    address: addresses.PRICE_AGGREGATOR_ADDRESS,
+    abi: priceAggregatorAbi,
+    functionName: "getOracles",
+  };
+
   const priceReport = {
     address: addresses.PRICE_AGGREGATOR_ADDRESS,
     abi: priceAggregatorAbi,
@@ -40,7 +48,7 @@ function createCalls(): [Array<CallObj>, number] {
   const latestCompletedRound = {
     address: addresses.PRICE_AGGREGATOR_ADDRESS,
     abi: priceAggregatorAbi,
-    functionName: "getLatestCompletedRound",
+    functionName: "getLatestRound",
   };
 
   const currentRound = getCurrentRound();
@@ -80,7 +88,8 @@ function createCalls(): [Array<CallObj>, number] {
     .concat(selicReportCalls)
     .concat(preLatestRoundCall)
     .concat(ipcaLatestRoundCall)
-    .concat(selicLatestRoundCall);
+    .concat(selicLatestRoundCall)
+    .concat(oracleScoresCall);
 
   return [calls, currentRound];
 }
@@ -97,7 +106,8 @@ const parseReports = (data: any): ReportProps[] => {
     if (item && item.result && Array.isArray(item.result)) {
       flattenedArray = flattenedArray.concat(
         item.result.map((subItem: any) => ({
-          unitPrice: parseUnitPrice(subItem.unitPrice),
+          price: parseUnitPrice(subItem.price),
+          apy: parseUnitPrice(subItem.apy),
           date: epochToLabel(subItem.timestamp.toString()),
           timestamp: subItem.timestamp,
           by: subItem.by,
@@ -135,10 +145,13 @@ export function usePrices() {
   const dataIpcaReports = data?.slice(currentRound, 2 * currentRound);
   const dataSelicReports = data?.slice(2 * currentRound, 3 * currentRound);
 
-  const latestRounds = data?.slice(-3);
+  const latestRounds = data?.slice(-4, -1);
   const dataPreLatestRound = latestRounds?.[0];
   const dataIpcaLatestRound = latestRounds?.[1];
   const dataSelicLatestRound = latestRounds?.[2];
+
+  //@ts-ignore
+  const scores = data?.at(-1)?.result[1].map((i) => Number(i));
 
   const preReports = {
     reports: parseReports(dataPreReports),
@@ -153,5 +166,5 @@ export function usePrices() {
     latestRound: dataSelicLatestRound?.result as unknown as ReportProps,
   };
 
-  return { preReports, ipcaReports, selicReports, isLoading, isError };
+  return { preReports, ipcaReports, selicReports, scores, isLoading, isError };
 }

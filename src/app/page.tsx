@@ -26,7 +26,8 @@ export default function Home() {
     })
   );
 
-  const { ipcaReports, selicReports, preReports, isError, isLoading } =
+  const [openExample, setOpenExample] = useState(false);
+  const { ipcaReports, selicReports, preReports, scores, isError, isLoading } =
     usePrices();
 
   const [selected, setSelected] = useState<string>("pre");
@@ -36,9 +37,9 @@ export default function Home() {
       : selected === "ipca"
       ? "Tesouro IPCA+ 2029"
       : "Tesouro Selic 2026";
-  const ipcaAverages = calculateDailyAverages(ipcaReports.reports);
-  const preAverages = calculateDailyAverages(preReports.reports);
-  const selicAverages = calculateDailyAverages(selicReports.reports);
+  const ipcaAverages = calculate30mAverages(ipcaReports.reports);
+  const preAverages = calculate30mAverages(preReports.reports);
+  const selicAverages = calculate30mAverages(selicReports.reports);
 
   const reports =
     selected === "pre"
@@ -72,7 +73,10 @@ export default function Home() {
             lastTimestamp={reports?.reports?.at(-1)?.timestamp}
             lastDate={reports?.reports?.at(-1)?.date || "Desconhecida"}
             lastValue={parseUnitPrice(
-              reports?.latestRound?.unitPrice as unknown as bigint
+              reports?.latestRound?.avgPrice as unknown as bigint
+            )}
+            lastApy={parseUnitPrice(
+              reports?.latestRound?.avgApy as unknown as bigint
             )}
           />
           <h1 className="text-4xl mt-10 font-bold">Oráculos</h1>
@@ -92,7 +96,11 @@ export default function Home() {
             este smart contract para executar sua lógica de negócios.
           </h2>
         </div>
-        <MarketCard reports={reports.reports} tokenName={tokenName} />
+        <MarketCard
+          reports={reports.reports}
+          tokenName={tokenName}
+          scores={scores}
+        />
         <div className="my-2 rounded-xl max-h-[100px] border-[1px] bg-slate-110 p-4">
           <div className="font-bold leading-5 flex flex-row">
             <p className="mr-2">Endereço do smart contract</p>
@@ -124,19 +132,41 @@ export default function Home() {
           </div>
         </div>
 
-        {/* <div className="my-2 rounded-xl max-h-[100px] border-[1px] bg-slate-110 p-4">
-          <div className="font-bold leading-5 flex flex-row">
-            Obtendo a cotação dos Títulos do Tesouro no seu smart contract
+        <div className="font-bold leading-5 flex flex-col my-2 rounded-xl border-[1px] bg-slate-110 p-4">
+          <div className="flex flex-row">
+            <h2
+              className="cursor-pointer mr-2"
+              onClick={() => setOpenExample(!openExample)}
+            >
+              Obtendo a cotação dos Títulos do Tesouro no seu smart contract
+            </h2>
+            <Tooltip
+              content={
+                <span className="max-w-[32ch] block text-justify">
+                  Exemplo de smart contract em Solidity para obter valores do
+                  Tesouro.
+                </span>
+              }
+              placement="right"
+              style={"light"}
+              className=""
+            >
+              <button type="button" className="">
+                <img src="https://smartcontract.imgix.net/icons/info.svg?auto=compress%2Cformat" />
+              </button>
+            </Tooltip>
+          </div>
+          {openExample && (
             <div
-              className="prose-lg prose-invert mt-2 max-w-none prose-a:text-blue-400 prose-pre:w-fit prose-pre:bg-dark-secondary_background prose-tr:divide-x prose-th:border-b-[2px]"
+              className="bg-gray-100 p-2 text-xs prose-lg prose-invert mt-2 max-w-none prose-a:text-blue-400 prose-pre:w-fit prose-pre:bg-dark-secondary_background prose-tr:divide-x prose-th:border-b-[2px]"
               dangerouslySetInnerHTML={{
                 __html: CONTRACT_EXAMPLE
                   ? (marked.parse(CONTRACT_EXAMPLE) as string)
                   : "No content.",
               }}
             ></div>
-          </div>
-        </div> */}
+          )}
+        </div>
       </div>
       <LineChart
         labels={Object.keys(averages)}
@@ -149,20 +179,32 @@ export default function Home() {
   );
 }
 
-function calculateDailyAverages(data: any) {
+function calculate30mAverages(data: any) {
   const dailyData: Record<string, any> = {};
 
   data.forEach((item: any) => {
-    const dateKey = new Date(Number(item.timestamp) * 1000)
+    let key;
+    const date = new Date(Number(item.timestamp) * 1000)
       .toISOString()
       .split("T")[0];
 
-    if (!dailyData[dateKey]) {
-      dailyData[dateKey] = { sum: 0, count: 0 };
+    const [hours, minutes, seconds] = new Date(Number(item.timestamp) * 1000)
+      .toISOString()
+      .split("T")[1]
+      .split(":");
+
+    if (Number(minutes) < 30) {
+      key = date + " " + hours + "h" + "00m";
+    } else {
+      key = date + " " + ((Number(hours) + 1) % 24) + "h" + "00m";
     }
 
-    dailyData[dateKey].sum += Number(item.unitPrice);
-    dailyData[dateKey].count++;
+    if (!dailyData[key]) {
+      dailyData[key] = { sum: 0, count: 0 };
+    }
+
+    dailyData[key].sum += Number(item.price);
+    dailyData[key].count++;
   });
 
   const dailyAverages: Record<string, number> = {};

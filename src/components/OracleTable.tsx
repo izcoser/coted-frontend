@@ -27,6 +27,9 @@ const OracleTable = ({ reports, tokenName }: Props) => {
                     Título
                   </th>
                   <th className="bg-green-100 border text-left px-4 sm:px-8 py-2 sm:py-4">
+                    Taxa anual
+                  </th>
+                  <th className="bg-green-100 border text-left px-4 sm:px-8 py-2 sm:py-4">
                     Preço Unitário
                   </th>
                   <th className="bg-green-100 border text-left px-4 sm:px-8 py-2 sm:py-4">
@@ -49,7 +52,8 @@ const OracleTable = ({ reports, tokenName }: Props) => {
                       </a>
                     </td>
                     <td className="border px-4 sm:px-8 py-2 sm:py-4 font-bold text-sm sm:text-base font-bold">{tokenName}</td>
-                    <td className="border px-4 sm:px-8 py-2 sm:py-4 font-bold text-sm sm:text-base">R$ {r.unitPrice}</td>
+                    <td className="border px-4 sm:px-8 py-2 sm:py-4 font-bold text-sm sm:text-base">{r.apy}</td>
+                    <td className="border px-4 sm:px-8 py-2 sm:py-4 font-bold text-sm sm:text-base">R$ {r.price}</td>
                     <td className="border px-4 sm:px-8 py-2 sm:py-4 font-bold text-sm sm:text-base">{r.date}</td>
                   </tr>
                 ))}

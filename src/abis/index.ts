@@ -48,8 +48,24 @@ export const priceAggregatorAbi = [
         name: "b",
         type: "uint256",
       },
+      {
+        internalType: "uint256",
+        name: "c",
+        type: "uint256",
+      },
     ],
     name: "PriceAggregator__ArrayLengthMismatch",
+    type: "error",
+  },
+  {
+    inputs: [
+      {
+        internalType: "address",
+        name: "oracle",
+        type: "address",
+      },
+    ],
+    name: "PriceAggregator__OracleAlreadyRegistered",
     type: "error",
   },
   {
@@ -71,6 +87,17 @@ export const priceAggregatorAbi = [
       },
     ],
     name: "PriceAggregator__OracleAlreadyReported",
+    type: "error",
+  },
+  {
+    inputs: [
+      {
+        internalType: "address",
+        name: "oracle",
+        type: "address",
+      },
+    ],
+    name: "PriceAggregator__OracleNotRegistered",
     type: "error",
   },
   {
@@ -113,7 +140,12 @@ export const priceAggregatorAbi = [
         components: [
           {
             internalType: "uint256",
-            name: "unitPrice",
+            name: "apy",
+            type: "uint256",
+          },
+          {
+            internalType: "uint256",
+            name: "price",
             type: "uint256",
           },
           {
@@ -155,7 +187,22 @@ export const priceAggregatorAbi = [
         components: [
           {
             internalType: "uint256",
-            name: "unitPrice",
+            name: "avgApy",
+            type: "uint256",
+          },
+          {
+            internalType: "uint256",
+            name: "medApy",
+            type: "uint256",
+          },
+          {
+            internalType: "uint256",
+            name: "avgPrice",
+            type: "uint256",
+          },
+          {
+            internalType: "uint256",
+            name: "medPrice",
             type: "uint256",
           },
           {
@@ -164,13 +211,13 @@ export const priceAggregatorAbi = [
             type: "uint256",
           },
           {
-            internalType: "address",
-            name: "by",
-            type: "address",
+            internalType: "uint80",
+            name: "sources",
+            type: "uint80",
           },
         ],
         indexed: false,
-        internalType: "struct PriceAggregator.PriceReport",
+        internalType: "struct PriceAggregator.FinalReport",
         name: "priceReport",
         type: "tuple",
       },
@@ -294,6 +341,32 @@ export const priceAggregatorAbi = [
   },
   {
     inputs: [],
+    name: "MAX_ERROR_THRESHOLD",
+    outputs: [
+      {
+        internalType: "uint256",
+        name: "",
+        type: "uint256",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "MIN_ERROR_THRESHOLD",
+    outputs: [
+      {
+        internalType: "uint256",
+        name: "",
+        type: "uint256",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [],
     name: "ORACLE_ROLE",
     outputs: [
       {
@@ -337,7 +410,12 @@ export const priceAggregatorAbi = [
         components: [
           {
             internalType: "uint256",
-            name: "unitPrice",
+            name: "apy",
+            type: "uint256",
+          },
+          {
+            internalType: "uint256",
+            name: "price",
             type: "uint256",
           },
           {
@@ -362,7 +440,22 @@ export const priceAggregatorAbi = [
         components: [
           {
             internalType: "uint256",
-            name: "unitPrice",
+            name: "avgApy",
+            type: "uint256",
+          },
+          {
+            internalType: "uint256",
+            name: "medApy",
+            type: "uint256",
+          },
+          {
+            internalType: "uint256",
+            name: "avgPrice",
+            type: "uint256",
+          },
+          {
+            internalType: "uint256",
+            name: "medPrice",
             type: "uint256",
           },
           {
@@ -371,17 +464,17 @@ export const priceAggregatorAbi = [
             type: "uint256",
           },
           {
-            internalType: "address",
-            name: "by",
-            type: "address",
+            internalType: "uint80",
+            name: "sources",
+            type: "uint80",
           },
         ],
-        internalType: "struct PriceAggregator.PriceReport",
+        internalType: "struct PriceAggregator.FinalReport",
         name: "finalPrice",
         type: "tuple",
       },
     ],
-    stateMutability: "view",
+    stateMutability: "nonpayable",
     type: "function",
   },
   {
@@ -436,13 +529,28 @@ export const priceAggregatorAbi = [
         type: "address",
       },
     ],
-    name: "getLatestCompletedRound",
+    name: "getLatestRound",
     outputs: [
       {
         components: [
           {
             internalType: "uint256",
-            name: "unitPrice",
+            name: "avgApy",
+            type: "uint256",
+          },
+          {
+            internalType: "uint256",
+            name: "medApy",
+            type: "uint256",
+          },
+          {
+            internalType: "uint256",
+            name: "avgPrice",
+            type: "uint256",
+          },
+          {
+            internalType: "uint256",
+            name: "medPrice",
             type: "uint256",
           },
           {
@@ -451,12 +559,12 @@ export const priceAggregatorAbi = [
             type: "uint256",
           },
           {
-            internalType: "address",
-            name: "by",
-            type: "address",
+            internalType: "uint80",
+            name: "sources",
+            type: "uint80",
           },
         ],
-        internalType: "struct PriceAggregator.PriceReport",
+        internalType: "struct PriceAggregator.FinalReport",
         name: "priceReport",
         type: "tuple",
       },
@@ -468,36 +576,37 @@ export const priceAggregatorAbi = [
     inputs: [
       {
         internalType: "address",
-        name: "token",
+        name: "oracle",
         type: "address",
       },
     ],
-    name: "getLatestPartialRound",
+    name: "getOracleScore",
     outputs: [
       {
-        components: [
-          {
-            internalType: "uint256",
-            name: "unitPrice",
-            type: "uint256",
-          },
-          {
-            internalType: "uint256",
-            name: "timestamp",
-            type: "uint256",
-          },
-          {
-            internalType: "address",
-            name: "by",
-            type: "address",
-          },
-        ],
-        internalType: "struct PriceAggregator.PriceReport",
-        name: "priceReport",
-        type: "tuple",
+        internalType: "uint256",
+        name: "",
+        type: "uint256",
       },
     ],
-    stateMutability: "view",
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "getOracles",
+    outputs: [
+      {
+        internalType: "address[]",
+        name: "",
+        type: "address[]",
+      },
+      {
+        internalType: "uint256[]",
+        name: "",
+        type: "uint256[]",
+      },
+    ],
+    stateMutability: "nonpayable",
     type: "function",
   },
   {
@@ -538,7 +647,22 @@ export const priceAggregatorAbi = [
         components: [
           {
             internalType: "uint256",
-            name: "unitPrice",
+            name: "avgApy",
+            type: "uint256",
+          },
+          {
+            internalType: "uint256",
+            name: "medApy",
+            type: "uint256",
+          },
+          {
+            internalType: "uint256",
+            name: "avgPrice",
+            type: "uint256",
+          },
+          {
+            internalType: "uint256",
+            name: "medPrice",
             type: "uint256",
           },
           {
@@ -547,12 +671,12 @@ export const priceAggregatorAbi = [
             type: "uint256",
           },
           {
-            internalType: "address",
-            name: "by",
-            type: "address",
+            internalType: "uint80",
+            name: "sources",
+            type: "uint80",
           },
         ],
-        internalType: "struct PriceAggregator.PriceReport",
+        internalType: "struct PriceAggregator.FinalReport",
         name: "priceReport",
         type: "tuple",
       },
@@ -579,7 +703,12 @@ export const priceAggregatorAbi = [
         components: [
           {
             internalType: "uint256",
-            name: "unitPrice",
+            name: "apy",
+            type: "uint256",
+          },
+          {
+            internalType: "uint256",
+            name: "price",
             type: "uint256",
           },
           {
@@ -646,6 +775,25 @@ export const priceAggregatorAbi = [
   {
     inputs: [
       {
+        internalType: "uint256",
+        name: "",
+        type: "uint256",
+      },
+    ],
+    name: "oracles",
+    outputs: [
+      {
+        internalType: "address",
+        name: "",
+        type: "address",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
         internalType: "address",
         name: "oracle",
         type: "address",
@@ -686,6 +834,11 @@ export const priceAggregatorAbi = [
         name: "prices",
         type: "uint256[]",
       },
+      {
+        internalType: "uint256[]",
+        name: "apys",
+        type: "uint256[]",
+      },
     ],
     name: "reportPrices",
     outputs: [],
@@ -708,6 +861,46 @@ export const priceAggregatorAbi = [
     name: "revokeRole",
     outputs: [],
     stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        components: [
+          {
+            internalType: "uint256",
+            name: "apy",
+            type: "uint256",
+          },
+          {
+            internalType: "uint256",
+            name: "price",
+            type: "uint256",
+          },
+          {
+            internalType: "uint256",
+            name: "timestamp",
+            type: "uint256",
+          },
+          {
+            internalType: "address",
+            name: "by",
+            type: "address",
+          },
+        ],
+        internalType: "struct PriceAggregator.PriceReport[]",
+        name: "arr",
+        type: "tuple[]",
+      },
+      {
+        internalType: "bool",
+        name: "byPrice",
+        type: "bool",
+      },
+    ],
+    name: "sort",
+    outputs: [],
+    stateMutability: "pure",
     type: "function",
   },
   {

@@ -4,7 +4,7 @@ module.exports = {
     "./pages/**/*.{js,ts,jsx,tsx,mdx}",
     "./src/components/**/*.{js,ts,jsx,tsx,mdx}",
     "./app/**/*.{js,ts,jsx,tsx,mdx}",
-    'node_modules/flowbite-react/**/*.{js,jsx,ts,tsx}',
+    "node_modules/flowbite-react/**/*.{js,jsx,ts,tsx}",
   ],
   mode: "jit",
   theme: {
@@ -31,5 +31,5 @@ module.exports = {
       },
     },
   },
-  plugins: [require('flowbite/plugin')],
+  plugins: ["@tailwindcss/typography", require("flowbite/plugin")],
 };
