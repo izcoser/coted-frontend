@@ -33,10 +33,10 @@ export default function Home() {
   const [selected, setSelected] = useState<string>("pre");
   const tokenName =
     selected === "pre"
-      ? "Tesouro Prefixado 2026"
+      ? "Tesouro Prefixado 2026 LTN"
       : selected === "ipca"
-      ? "Tesouro IPCA+ 2029"
-      : "Tesouro Selic 2026";
+      ? "Tesouro IPCA+ 2029 NTN-B Principal"
+      : "Tesouro Selic 2026 LFT";
   const ipcaAverages = calculate30mAverages(ipcaReports.reports);
   const preAverages = calculate30mAverages(preReports.reports);
   const selicAverages = calculate30mAverages(selicReports.reports);
