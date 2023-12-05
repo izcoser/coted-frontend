@@ -1,21 +1,13 @@
-This is a [Next.js](https://nextjs.org) + [wagmi](https://wagmi.sh) + [@wagmi/cli](https://wagmi.sh/cli) project bootstrapped with [`create-wagmi`](https://github.com/wagmi-dev/wagmi/tree/main/packages/create-wagmi).
+## CoTeD frontend web
 
-This template demonstrates usage of the [`@wagmi/cli` ERC Plugin](https://wagmi.sh/cli/plugins/erc).
+Esse repositório contém o frontend web desenvolvido para o projeto CoTeD - Cotação do Tesouro Direto, submetido pela equipe [Venturus](https://github.com/venturusbr) à hackathon de tokenização de títulos públicos do tesouro. O framework usado para desenvolvimento foi o [Next.js](https://nextjs.org) + [wagmi](https://wagmi.sh) para as hooks de conexão à blockchain.
 
-# Getting Started
+CoTeD é um agregador de preços e taxas baseado em smart contracts similar à [Chainlink](https://chain.link), projetado para receber dados de títulos públicos tokenizados na blockchain do Real Digital.
 
-Run `npm run dev` in your terminal, and then open [localhost:3000](http://localhost:3000) in your browser.
+Mais informações, includindo os smart contracts em [drex-oracle-contracts](https://github.com/izcoser/drex-oracle-contracts)
 
-This command will also generate ERC20 + ERC721 React Hooks (via `npm run wagmi`) for you to use in your project.
+# Uso
 
-Once the webpage has loaded, changes made to files inside the `src/` directory (e.g. `src/pages/index.tsx`) will automatically update the webpage.
+`yarn dev`
 
-# Learn more
-
-To learn more about [Next.js](https://nextjs.org) or [wagmi](https://wagmi.sh), check out the following resources:
-
-- [wagmi Documentation](https://wagmi.sh) – learn about wagmi Hooks and API.
-- [wagmi Examples](https://wagmi.sh/examples/connect-wallet) – a suite of simple examples using wagmi.
-- [@wagmi/cli Documentation](https://wagmi.sh/cli) – learn more about the wagmi CLI.
-- [Next.js Documentation](https://nextjs.org/docs) learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+![Screenshot](images/image.png)

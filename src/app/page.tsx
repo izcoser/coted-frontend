@@ -62,6 +62,12 @@ export default function Home() {
 
   console.log({ reports });
 
+  const lastValue = reports?.latestRound?.avgPrice ? parseUnitPrice(
+    reports?.latestRound?.avgPrice as unknown as bigint
+  ) : reports.reports?.at(-1).price;
+
+  const lastApy = reports?.latestRound?.avgApy ? parseUnitPrice(reports?.latestRound?.avgApy) : reports.reports?.at(-1).apy;
+
   return (
     <main className="overflow-hidden">
       <Navbar />
@@ -72,12 +78,8 @@ export default function Home() {
           <ActualValue
             lastTimestamp={reports?.reports?.at(-1)?.timestamp}
             lastDate={reports?.reports?.at(-1)?.date || "Desconhecida"}
-            lastValue={parseUnitPrice(
-              reports?.latestRound?.avgPrice as unknown as bigint
-            )}
-            lastApy={parseUnitPrice(
-              reports?.latestRound?.avgApy as unknown as bigint
-            )}
+            lastValue={lastValue}
+            lastApy={lastApy}
           />
           <h1 className="text-4xl mt-10 font-bold">Oráculos</h1>
           <h2>
