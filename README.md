@@ -12,6 +12,6 @@ Mais informações, includindo os smart contracts em [drex-oracle-contracts](htt
 
 ![Screenshot](images/image.png)
 
-# Licensa
+# Licença
 
 MIT
