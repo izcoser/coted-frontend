@@ -11,3 +11,7 @@ Mais informações, includindo os smart contracts em [drex-oracle-contracts](htt
 `yarn dev`
 
 ![Screenshot](images/image.png)
+
+# Licensa
+
+MIT
