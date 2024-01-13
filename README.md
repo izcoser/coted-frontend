@@ -1,10 +1,14 @@
+[![pt-br](https://img.shields.io/badge/lang-pt--br-green.svg)](https://github.com/izcoser/drex-oracle-frontend/blob/main/README.pt-br.md)
+
 ## CoTeD frontend web
 
-Esse repositório contém o frontend web desenvolvido para o projeto CoTeD - Cotação do Tesouro Direto, submetido pela equipe [Venturus](https://github.com/venturusbr) à hackathon de tokenização de títulos públicos do tesouro. O framework usado para desenvolvimento foi o [Next.js](https://nextjs.org) + [wagmi](https://wagmi.sh) para as hooks de conexão à blockchain.
 
-CoTeD é um agregador de preços e taxas baseado em smart contracts similar à [Chainlink](https://chain.link), projetado para receber dados de títulos públicos tokenizados na blockchain do Real Digital.
+This repository contains the web frontend developed for the project CoTeD - Cotação do Tesouro Direto, submitted by the team [Venturus](https://github.com/venturusbr), which won the 2nd place prize at the [Hackathon Web3: Tokenização do Tesouro Nacional](https://web.archive.org/web/20231102034756/https://inova.serpro.gov.br/hackathon-web3-stn/).
+The framework used was [Next.js](https://nextjs.org) + [wagmi](https://wagmi.sh) for blockchain connection hooks.
 
-Mais informações, includindo os smart contracts em [drex-oracle-contracts](https://github.com/izcoser/drex-oracle-contracts)
+CoTeD is a smart contract based price and rates aggregator similar to [Chainlink](https://chain.link), designed to receive public treasury titles data in the DREX blockchain.
+
+More information, including the smart contracts, at [drex-oracle-contracts](https://github.com/izcoser/drex-oracle-contracts).
 
 # Uso
 
