@@ -8,7 +8,7 @@ The framework used was [Next.js](https://nextjs.org) + [wagmi](https://wagmi.sh)
 
 CoTeD is a smart contract based price and rates aggregator similar to [Chainlink](https://chain.link), designed to receive public treasury titles data in the DREX blockchain.
 
-More information, including the smart contracts, at [drex-oracle-contracts](https://github.com/izcoser/drex-oracle-contracts).
+More information, including the smart contracts, at [drex-oracle-contracts](https://github.com/izcoser/coted-contracts).
 
 # Uso
 
