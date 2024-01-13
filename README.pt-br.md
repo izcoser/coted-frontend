@@ -6,7 +6,7 @@ Esse repositório contém o frontend web desenvolvido para o projeto CoTeD - Cot
 
 CoTeD é um agregador de preços e taxas baseado em smart contracts similar à [Chainlink](https://chain.link), projetado para receber dados de títulos públicos tokenizados na blockchain do Real Digital.
 
-Mais informações, includindo os smart contracts em [drex-oracle-contracts](https://github.com/izcoser/drex-oracle-contracts)
+Mais informações, includindo os smart contracts em [coted-contracts](https://github.com/izcoser/coted-contracts)
 
 # Uso
 
